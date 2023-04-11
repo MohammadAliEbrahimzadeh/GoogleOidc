@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "TDBjOu8V1lQIVodtnm/jZSBgqPGK9ddOsSUAuikwvoE=",
+  "Source": "GoogleOidcTest",
+  "BasePath": "_content/GoogleOidcTest",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}
