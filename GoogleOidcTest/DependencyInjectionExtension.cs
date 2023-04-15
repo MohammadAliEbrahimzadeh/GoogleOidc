@@ -8,6 +8,7 @@ using GoogleOidcTest.Validations;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -31,8 +32,8 @@ internal static class DependencyInjectionExtension
         internal static IServiceCollection InjectAuthentication(this IServiceCollection services) =>
                services.AddAuthentication(options =>
                  {
-                         options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                         options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                         options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                         options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
                  })
                  .AddCookie(options =>
                         {
@@ -43,12 +44,18 @@ internal static class DependencyInjectionExtension
                                 options.ClientId = "314460019879-lvkocu1110mckhrc7sre4uo95g0q720a.apps.googleusercontent.com";
                                 options.ClientSecret = "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";
                                 options.SaveTokens = true;
-                                //options.Scope.Add("email");
-                                //options.Scope.Add("profile");
+                                options.CorrelationCookie.SecurePolicy = CookieSecurePolicy.Always;
                         }).Services;
-
+        
         internal static IServiceCollection InjectFluentValidation(this IServiceCollection services) =>
                 services.AddFluentValidationAutoValidation().AddValidatorsFromAssemblyContaining<RegisterValidation>();
+
+        internal static IServiceCollection InjectCors(this IServiceCollection services) =>
+              services.AddCors(p => p.AddPolicy("GoogleOidc", builder =>
+                {
+                        builder.AllowAnyMethod().AllowAnyOrigin().AllowAnyHeader();
+                }));
+
 
         internal static IServiceCollection InjectHttpContextAccessor(this IServiceCollection services) =>
                 services.AddHttpContextAccessor();

@@ -6,10 +6,12 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using System.Security.Claims;
 using static System.Net.WebRequestMethods;
@@ -46,30 +48,33 @@ namespace GoogleOidcTest.Controllers
                         return await _userService!.LoginAsync(loginDto, cancellationToken);
                 }
 
-                [HttpPost]
+                [HttpGet]
                 [Route("Google-Login")]
+                //[EnableCors("GoogleOidc")]
                 public IActionResult Login()
                 {
                         var properties = new AuthenticationProperties
                         {
-                                RedirectUri = "https://localhost:7184/api/user/Test"
+                                RedirectUri = "https://localhost:7184/api/user/Test",
+                                //Items =
+                                //{
+                                //              { "Key", "AIzaSyA1qNYJZ9UujssAXOd5815zgpsc2Qj-I9E" },
+                                //}
                         };
-
                         var result = Challenge(properties, GoogleDefaults.AuthenticationScheme);
 
                         return result;
                 }
 
-                [Authorize]
+                //[Authorize]
                 [HttpGet]
                 [Route("Test")]
+                //[EnableCors("GoogleOidc")]
                 public async Task<IActionResult> Test()
                 {
                         var cliams = User.Claims.ToList();
 
                         var token = await HttpContext.GetTokenAsync(OpenIdConnectParameterNames.AccessToken);
-                        var idToken = await HttpContext.GetTokenAsync(OpenIdConnectParameterNames.IdToken);
-                        var refreshToken = await HttpContext.GetTokenAsync(OpenIdConnectParameterNames.RefreshToken);
 
                         return Ok();
                 }
